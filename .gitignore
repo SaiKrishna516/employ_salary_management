@@ -12,3 +12,4 @@ backend/*.pid
 # Editor
 .idea/
 .vscode/
+coverage/

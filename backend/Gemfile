@@ -36,3 +36,5 @@ end
 group :development do
   # gem "spring"
 end
+
+gem "simplecov", "~> 0.22.0", :group => :test

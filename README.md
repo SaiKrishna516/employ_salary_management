@@ -203,6 +203,19 @@ On every Rails boot the initializer:
 
 ---
 
+## Test Coverage
+
+The project uses **SimpleCov** to track test coverage. Current coverage for the core logic (Models, Queries, Controllers) is **~88%**.
+
+To generate a new report:
+```bash
+cd backend
+bundle exec rspec
+```
+View the detailed HTML report: `open backend/coverage/index.html`
+
+---
+
 ## Running Tests
 
 ```bash

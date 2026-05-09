@@ -810,3 +810,69 @@ Processing by Api::V1::EmployeesController#index as HTML
 Completed 200 OK in 7ms (Views: 0.4ms | ActiveRecord: 1.2ms | Allocations: 2917)
 
 
+Started GET "/api/v1/employees?employment_type=full_time&page=1&per_page=25" for ::1 at 2026-05-09 19:02:28 +0530
+Processing by Api::V1::EmployeesController#index as HTML
+  Parameters: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25"}
+[31mUnpermitted parameters: :page, :per_page. Context: { controller: Api::V1::EmployeesController, action: index, request: #<ActionDispatch::Request:0x0000000116dfac98>, params: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25", "controller"=>"api/v1/employees", "action"=>"index"} }[0m
+  [1m[36mEmployee Load (72.8ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."employment_type" = $1 ORDER BY id asc LIMIT $2 OFFSET $3[0m  [["employment_type", "full_time"], ["LIMIT", 25], ["OFFSET", 0]]
+  ↳ app/controllers/api/v1/employees_controller.rb:12:in `index'
+  [1m[36mEmployee Count (4.9ms)[0m  [1m[34mSELECT COUNT(*) FROM "employees" WHERE "employees"."employment_type" = $1[0m  [["employment_type", "full_time"]]
+  ↳ app/controllers/api/v1/employees_controller.rb:67:in `pagination_meta'
+Completed 200 OK in 113ms (Views: 0.6ms | ActiveRecord: 90.5ms | Allocations: 6222)
+
+
+Started GET "/api/v1/employees?employment_type=full_time&page=1&per_page=25" for ::1 at 2026-05-09 19:08:00 +0530
+Processing by Api::V1::EmployeesController#index as HTML
+  Parameters: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25"}
+[31mUnpermitted parameters: :page, :per_page. Context: { controller: Api::V1::EmployeesController, action: index, request: #<ActionDispatch::Request:0x00000001207fae60>, params: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25", "controller"=>"api/v1/employees", "action"=>"index"} }[0m
+  [1m[36mEmployee Load (1.8ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."employment_type" = $1 ORDER BY id asc LIMIT $2 OFFSET $3[0m  [["employment_type", "full_time"], ["LIMIT", 25], ["OFFSET", 0]]
+  ↳ app/controllers/api/v1/employees_controller.rb:12:in `index'
+  [1m[36mEmployee Count (2.5ms)[0m  [1m[34mSELECT COUNT(*) FROM "employees" WHERE "employees"."employment_type" = $1[0m  [["employment_type", "full_time"]]
+  ↳ app/controllers/api/v1/employees_controller.rb:67:in `pagination_meta'
+Completed 200 OK in 22ms (Views: 2.0ms | ActiveRecord: 4.2ms | Allocations: 2912)
+
+
+Started GET "/api/v1/employees?employment_type=full_time&page=1&per_page=25" for ::1 at 2026-05-09 19:09:42 +0530
+Processing by Api::V1::EmployeesController#index as HTML
+  Parameters: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25"}
+[31mUnpermitted parameters: :page, :per_page. Context: { controller: Api::V1::EmployeesController, action: index, request: #<ActionDispatch::Request:0x0000000120891040>, params: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25", "controller"=>"api/v1/employees", "action"=>"index"} }[0m
+  [1m[36mEmployee Load (154.6ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."employment_type" = $1 ORDER BY id asc LIMIT $2 OFFSET $3[0m  [["employment_type", "full_time"], ["LIMIT", 25], ["OFFSET", 0]]
+  ↳ app/controllers/api/v1/employees_controller.rb:12:in `index'
+  [1m[36mEmployee Count (0.9ms)[0m  [1m[34mSELECT COUNT(*) FROM "employees" WHERE "employees"."employment_type" = $1[0m  [["employment_type", "full_time"]]
+  ↳ app/controllers/api/v1/employees_controller.rb:67:in `pagination_meta'
+Completed 200 OK in 233ms (Views: 1.3ms | ActiveRecord: 155.5ms | Allocations: 2912)
+
+
+Started GET "/api/v1/employees?employment_type=full_time&page=1&per_page=25" for ::1 at 2026-05-09 19:10:20 +0530
+Processing by Api::V1::EmployeesController#index as HTML
+  Parameters: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25"}
+[31mUnpermitted parameters: :page, :per_page. Context: { controller: Api::V1::EmployeesController, action: index, request: #<ActionDispatch::Request:0x000000011345e2f0>, params: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25", "controller"=>"api/v1/employees", "action"=>"index"} }[0m
+  [1m[36mEmployee Load (0.7ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."employment_type" = $1 ORDER BY id asc LIMIT $2 OFFSET $3[0m  [["employment_type", "full_time"], ["LIMIT", 25], ["OFFSET", 0]]
+  ↳ app/controllers/api/v1/employees_controller.rb:12:in `index'
+  [1m[36mEmployee Count (90.3ms)[0m  [1m[34mSELECT COUNT(*) FROM "employees" WHERE "employees"."employment_type" = $1[0m  [["employment_type", "full_time"]]
+  ↳ app/controllers/api/v1/employees_controller.rb:67:in `pagination_meta'
+Completed 200 OK in 107ms (Views: 0.6ms | ActiveRecord: 91.0ms | Allocations: 2914)
+
+
+Started GET "/api/v1/employees?employment_type=full_time&page=1&per_page=25" for ::1 at 2026-05-09 19:17:27 +0530
+Processing by Api::V1::EmployeesController#index as HTML
+  Parameters: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25"}
+[31mUnpermitted parameters: :page, :per_page. Context: { controller: Api::V1::EmployeesController, action: index, request: #<ActionDispatch::Request:0x0000000116cfbd60>, params: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25", "controller"=>"api/v1/employees", "action"=>"index"} }[0m
+  [1m[36mEmployee Load (128.1ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."employment_type" = $1 ORDER BY id asc LIMIT $2 OFFSET $3[0m  [["employment_type", "full_time"], ["LIMIT", 25], ["OFFSET", 0]]
+  ↳ app/controllers/api/v1/employees_controller.rb:12:in `index'
+  [1m[36mEmployee Count (4.2ms)[0m  [1m[34mSELECT COUNT(*) FROM "employees" WHERE "employees"."employment_type" = $1[0m  [["employment_type", "full_time"]]
+  ↳ app/controllers/api/v1/employees_controller.rb:67:in `pagination_meta'
+Completed 200 OK in 199ms (Views: 1.5ms | ActiveRecord: 144.5ms | Allocations: 6245)
+
+
+Started GET "/api/v1/employees?employment_type=full_time&page=1&per_page=25" for ::1 at 2026-05-09 19:20:58 +0530
+Processing by Api::V1::EmployeesController#index as HTML
+  Parameters: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25"}
+[31mUnpermitted parameters: :page, :per_page. Context: { controller: Api::V1::EmployeesController, action: index, request: #<ActionDispatch::Request:0x000000012087fc00>, params: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25", "controller"=>"api/v1/employees", "action"=>"index"} }[0m
+  [1m[36mEmployee Load (1.1ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."employment_type" = $1 ORDER BY id asc LIMIT $2 OFFSET $3[0m  [["employment_type", "full_time"], ["LIMIT", 25], ["OFFSET", 0]]
+  ↳ app/controllers/api/v1/employees_controller.rb:12:in `index'
+  [1m[36mEmployee Count (0.7ms)[0m  [1m[34mSELECT COUNT(*) FROM "employees" WHERE "employees"."employment_type" = $1[0m  [["employment_type", "full_time"]]
+  ↳ app/controllers/api/v1/employees_controller.rb:67:in `pagination_meta'
+Completed 200 OK in 14ms (Views: 0.6ms | ActiveRecord: 1.8ms | Allocations: 2913)
+
+
