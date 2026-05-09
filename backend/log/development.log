@@ -1,0 +1,21 @@
+  [1m[35m (137.8ms)[0m  [1m[35mCREATE DATABASE "backend_development" ENCODING = 'unicode'[0m
+  [1m[35m (52.4ms)[0m  [1m[35mCREATE DATABASE "backend_test" ENCODING = 'unicode'[0m
+  [1m[35m (3.1ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY)[0m
+  [1m[35m (1.2ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT pg_try_advisory_lock(5073945470573576205)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.7ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Create (0.5ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'development', '2026-05-09 10:31:39.052149', '2026-05-09 10:31:39.052154') RETURNING "key"[0m
+Migrating to CreateEmployees (20260509103124)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (2.0ms)[0m  [1m[35mCREATE TABLE "employees" ("id" bigserial primary key, "full_name" character varying NOT NULL, "job_title" character varying NOT NULL, "department" character varying NOT NULL, "country" character varying NOT NULL, "salary" decimal(12,2) NOT NULL, "currency" character varying DEFAULT 'USD' NOT NULL, "employment_type" character varying DEFAULT 'full_time' NOT NULL, "email" character varying NOT NULL, "hired_on" date NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.4ms)[0m  [1m[35mCREATE INDEX "index_employees_on_country" ON "employees" ("country")[0m
+  [1m[35m (0.3ms)[0m  [1m[35mCREATE INDEX "index_employees_on_job_title" ON "employees" ("job_title")[0m
+  [1m[35m (0.3ms)[0m  [1m[35mCREATE INDEX "index_employees_on_department" ON "employees" ("department")[0m
+  [1m[35m (0.3ms)[0m  [1m[35mCREATE INDEX "index_employees_on_employment_type" ON "employees" ("employment_type")[0m
+  [1m[35m (0.3ms)[0m  [1m[35mCREATE INDEX "index_employees_on_country_and_job_title" ON "employees" ("country", "job_title")[0m
+  [1m[35m (0.3ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_employees_on_email" ON "employees" ("email")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20260509103124') RETURNING "version"[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_advisory_unlock(5073945470573576205)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
