@@ -1,8 +1,13 @@
 # Environment — never commit the real .env
 .env
 
-# macOS
+# Rails generated caches and runtime files — never commit these
+backend/tmp/
+backend/*.pid
+
+# macOS metadata — everywhere
 .DS_Store
+**/.DS_Store
 
 # Editor
 .idea/
