@@ -1,59 +1,63 @@
-# syntax = docker/dockerfile:1
+# ──────────────────────────────────────────────────────────────────────────────
+# Stage 1: production image
+# ──────────────────────────────────────────────────────────────────────────────
+FROM ruby:3.2.2-alpine AS production
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.2.2
-FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
+# System dependencies
+RUN apk add --no-cache \
+    build-base \
+    postgresql-dev \
+    tzdata \
+    curl \
+    git
 
-# Rails app lives here
-WORKDIR /rails
+WORKDIR /app
 
-# Set production environment
-ENV RAILS_ENV="production" \
-    BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
-
-
-# Throw-away build stage to reduce size of final image
-FROM base as build
-
-# Install packages needed to build gems
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libvips pkg-config
-
-# Install application gems
+# Install gems (production only) — layer cached unless Gemfile changes
 COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
-    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
-    bundle exec bootsnap precompile --gemfile
+RUN bundle config set --local without 'development test' && \
+    bundle install --jobs 4 --retry 3
 
-# Copy application code
+# Copy full source
 COPY . .
 
-# Precompile bootsnap code for faster boot times
-RUN bundle exec bootsnap precompile app/ lib/
+# Precompile bootsnap cache for faster boot
+RUN bundle exec bootsnap precompile --gemfile app/ lib/
 
+ENV RAILS_ENV=production
+ENV RAILS_LOG_TO_STDOUT=true
+ENV PORT=3001
 
-# Final stage for app image
-FROM base
+EXPOSE 3001
 
-# Install packages needed for deployment
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libvips postgresql-client && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+COPY docker-entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Copy built artifacts: gems, application
-COPY --from=build /usr/local/bundle /usr/local/bundle
-COPY --from=build /rails /rails
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
 
-# Run and own only the runtime files as a non-root user for security
-RUN useradd rails --create-home --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp
-USER rails:rails
+# ──────────────────────────────────────────────────────────────────────────────
+# Stage 2: development image (includes dev/test gems, no bootsnap precompile)
+# ──────────────────────────────────────────────────────────────────────────────
+FROM ruby:3.2.2-alpine AS development
 
-# Entrypoint prepares the database.
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+RUN apk add --no-cache \
+    build-base \
+    postgresql-dev \
+    tzdata \
+    curl \
+    git \
+    bash
 
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 3000
-CMD ["./bin/rails", "server"]
+WORKDIR /app
+
+COPY Gemfile Gemfile.lock ./
+RUN bundle install --jobs 4 --retry 3
+
+COPY . .
+
+ENV RAILS_ENV=development
+ENV PORT=3001
+
+EXPOSE 3001
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]

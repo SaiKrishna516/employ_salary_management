@@ -1,0 +1,45 @@
+# Development overrides — use alongside docker-compose.yml:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+#
+# Differences from production:
+#   - RAILS_ENV / NODE_ENV = development
+#   - Live reload via volume mounts (backend + frontend source)
+#   - No multi-stage build for frontend; uses Vite dev server instead
+#   - Postgres port exposed for direct access (e.g., TablePlus, psql)
+
+services:
+  db:
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      target: development
+    environment:
+      RAILS_ENV:        development
+      DATABASE_URL:     postgresql://salary_tool:${POSTGRES_PASSWORD:-devpass}@db:5432/salary_tool_development
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY:-}
+      ALLOWED_ORIGIN:   http://localhost:5173
+      PORT:             3001
+    volumes:
+      - ./backend:/app
+      - backend_gems:/usr/local/bundle
+      - ./frontend/src/lib:/app/../frontend/src/lib
+    command: >
+      sh -c "bundle exec rails db:create db:migrate && bundle exec puma -C config/puma.rb"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    environment:
+      VITE_API_BASE_URL: http://localhost:3001/api/v1
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: npm run dev -- --host
+
+volumes:
+  backend_gems:

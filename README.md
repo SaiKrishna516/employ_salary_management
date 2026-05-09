@@ -1,26 +1,35 @@
 # Salary Management Tool
 
-HR salary management tool supporting 10,000 employees.
+A full-stack HR salary management application supporting 10,000+ employees with analytics, filtering, and bulk seeding — built with strict TDD throughout.
 
 ## Stack
 
-| Layer    | Technology                            |
-|----------|---------------------------------------|
-| Backend  | Rails 7.1 API-only, PostgreSQL        |
-| Testing  | RSpec, FactoryBot, Faker, shoulda-matchers |
-| Frontend | React 18 + Vite + TypeScript          |
-| UI       | shadcn/ui + Tailwind CSS              |
-| Table    | TanStack Table v8                     |
-| Data     | TanStack Query                        |
+| Layer | Technology |
+|---|---|
+| **Backend** | Rails 7.1 API-only, PostgreSQL |
+| **Testing** | RSpec, FactoryBot, Faker, shoulda-matchers |
+| **Frontend** | React 18 + Vite + TypeScript |
+| **State / Data** | TanStack Query v5 |
+| **Table** | TanStack Table v8 |
+| **Forms** | react-hook-form + Zod |
+| **Styling** | Tailwind CSS v4 |
+
+---
 
 ## Getting Started
+
+### Prerequisites
+- Ruby 3.2.2
+- Node.js 18+
+- PostgreSQL 14+
 
 ### Backend
 
 ```bash
 cd backend
 bundle install
-rails db:create db:migrate db:seed
+rails db:create db:migrate
+rails db:seed          # seeds 10,000 employees (~1.5s via insert_all)
 rails s -p 3001
 ```
 
@@ -29,26 +38,189 @@ rails s -p 3001
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run dev            # starts at http://localhost:5173
 ```
+
+> **Note:** Restart the Rails server after any change to `config/employee_options.yml`.  
+> The initializer auto-writes `frontend/src/lib/constants.json` on every boot, keeping dropdowns in sync with the backend.
+
+---
+
+## Docker (Recommended for Deployment)
+
+### Production
+
+```bash
+# 1. Copy and fill in env vars
+cp .env.example .env
+# Edit .env — set POSTGRES_PASSWORD, RAILS_MASTER_KEY, ALLOWED_ORIGIN, VITE_API_BASE_URL
+
+# 2. Start all services (postgres → backend → frontend)
+docker compose up -d --build
+
+# 3. (First time only) Seed the database
+docker compose exec backend bundle exec rails db:seed
+```
+
+Services started:
+| Service | Container port | Host port |
+|---|---|---|
+| PostgreSQL 16 | 5432 | internal only |
+| Rails API (Puma) | 3001 | 3001 |
+| React (nginx) | 80 | 80 |
+
+### Local Development with Docker
+
+```bash
+# Start with live-reload (Vite HMR + Rails file watching)
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+```
+
+Changes to `backend/` or `frontend/src/` reflect instantly without rebuilds.
+
+### Useful commands
+
+```bash
+# View logs
+docker compose logs -f backend
+docker compose logs -f frontend
+
+# Run Rails console
+docker compose exec backend bundle exec rails c
+
+# Run specs inside the container
+docker compose exec backend bundle exec rspec
+
+# Scale backend (multiple Puma processes)
+docker compose up -d --scale backend=3
+
+# Tear down (keeps DB volume)
+docker compose down
+
+# Tear down + wipe DB
+docker compose down -v
+```
+
+---
+
+## Environment Variables
+
+### Backend (`backend/.env` or shell)
+
+| Variable | Default | Description |
+|---|---|---|
+| `ALLOWED_ORIGIN` | `http://localhost:5173` | CORS allowed origin — **must be set in production** |
+| `DATABASE_URL` | *(pg defaults)* | PostgreSQL connection string |
+
+### Frontend (`frontend/.env`)
+
+| Variable | Default | Description |
+|---|---|---|
+| `VITE_API_BASE_URL` | `http://localhost:3001/api/v1` | Base URL for all API calls |
+
+---
 
 ## Project Structure
 
 ```
 salary-tool/
-├── backend/        # Rails 7 API-only
+├── backend/
 │   ├── app/
 │   │   ├── controllers/api/v1/
+│   │   │   ├── employees_controller.rb   # CRUD + pagination + filtering
+│   │   │   └── insights_controller.rb    # Analytical endpoints
 │   │   ├── models/
+│   │   │   └── employee.rb               # Validations + sorting scopes
 │   │   ├── queries/
+│   │   │   ├── employee_filter.rb        # Filter query object
+│   │   │   └── insights_query.rb         # Aggregate SQL (min/max/avg/bands)
 │   │   └── serializers/
+│   │       └── employee_serializer.rb    # JSONAPI response shape
+│   ├── config/
+│   │   ├── employee_options.yml          # ← Single source of truth for all option lists
+│   │   └── initializers/
+│   │       └── employee_options.rb       # Loads YAML, writes constants.json to frontend
 │   ├── db/
-│   └── spec/
-├── frontend/       # React 18 + Vite
-├── DECISIONS.md
-└── README.md
+│   │   ├── first_names.txt / last_names.txt
+│   │   └── seeds.rb                      # 10,000 rows via insert_all in 1s
+│   └── spec/                             # 56 examples, ~3s
+│       ├── models/
+│       ├── queries/
+│       └── requests/api/v1/
+└── frontend/
+    └── src/
+        ├── lib/
+        │   ├── api.ts                    # Axios client + TypeScript interfaces
+        │   ├── schemas.ts                # Zod schema + constants (from constants.json)
+        │   └── constants.json            # Auto-generated by Rails on boot — do not edit
+        ├── components/
+        │   └── EmployeeModal.tsx         # Add / Edit form with dropdown validation
+        └── pages/
+            ├── EmployeesPage.tsx         # Sortable, filterable, paginated table
+            └── InsightsPage.tsx          # Country-level salary analytics
 ```
+
+---
+
+## API Reference
+
+### Employees
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/api/v1/employees` | List with filtering, sorting & pagination |
+| `POST` | `/api/v1/employees` | Create employee |
+| `GET` | `/api/v1/employees/:id` | Show employee |
+| `PATCH` | `/api/v1/employees/:id` | Update employee |
+| `DELETE` | `/api/v1/employees/:id` | Delete employee |
+
+**Query params for GET /employees:**
+- `country`, `department`, `employment_type` — exact match filters
+- `search` — case-insensitive `full_name` substring search
+- `sort`, `direction` — any column in `SORTABLE_COLUMNS` whitelist
+- `page`, `per_page` — Kaminari pagination (default 25/page)
+
+### Insights
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/api/v1/insights?country=India` | Min/max/avg, breakdown by job title, salary bands |
+| `GET` | `/api/v1/insights/countries` | Distinct country list |
+
+---
+
+## Shared Constants (Single Source of Truth)
+
+All dropdown option lists live in **`backend/config/employee_options.yml`**:
+
+```
+employment_types, currencies, job_titles, departments, countries
+```
+
+On every Rails boot the initializer:
+1. Loads the YAML into the `EmployeeOptions` module (used by model validations + seeds)
+2. Writes `frontend/src/lib/constants.json` so the React form dropdowns stay in sync automatically
+
+---
+
+## Running Tests
+
+```bash
+cd backend
+bundle exec rspec                        # all 56 examples
+bundle exec rspec spec/models/           # model validations only
+bundle exec rspec spec/requests/         # request/integration specs only
+bundle exec rspec --format documentation # verbose output
+```
+
+---
 
 ## Development Approach
 
 **Strict TDD** — failing test → implementation → refactor. No production code without a prior test.
+
+Key patterns:
+- **Query Objects** (`EmployeeFilter`, `InsightsQuery`) — keep controllers thin, SQL logic testable in isolation
+- **SORTABLE_COLUMNS whitelist** — prevents SQL injection via arbitrary sort params
+- **`insert_all`** in seeds — bypasses ActiveRecord callbacks for bulk performance (~10,000 rows in 1.5s)
+- **Expression index** on `LOWER(country)` — `by_country` scope hits the index rather than full-scanning

@@ -29,3 +29,13 @@
 !/storage/.keep
 /tmp/storage/*
 !/tmp/storage/.keep
+
+# Ignore test suite — not needed in production image.
+/spec/
+
+# Ignore seed name lists — seeding is a manual step, not part of the image.
+/db/first_names.txt
+/db/last_names.txt
+
+# Ignore macOS metadata.
+.DS_Store
