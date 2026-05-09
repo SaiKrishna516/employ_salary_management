@@ -2,15 +2,27 @@ class Employee < ApplicationRecord
   # Option lists live in config/employee_options.yml — accessed via EmployeeOptions module.
   # Do NOT redefine them here; use EmployeeOptions.employment_types / .currencies directly.
 
-  validates :full_name,       presence: true
-  validates :job_title,       presence: true
-  validates :department,      presence: true
-  validates :country,         presence: true
-  validates :email,           presence: true, uniqueness: { case_sensitive: false }
+  validates :full_name,       presence: true, length: { maximum: 255 }
+  validates :job_title,       presence: true, length: { maximum: 255 }
+  validates :department,      presence: true, length: { maximum: 255 }
+  validates :country,         presence: true, length: { maximum: 255 }
+  validates :email,           presence: true,
+                              uniqueness: { case_sensitive: false },
+                              format: {
+                                with:    URI::MailTo::EMAIL_REGEXP,
+                                message: "must be a valid email address"
+                              }
   validates :hired_on,        presence: true
-  validates :salary,          numericality: { greater_than: 0, less_than: 10_000_000 }
-  validates :employment_type, inclusion: { in: -> { EmployeeOptions.employment_types } }
-  validates :currency,        inclusion: { in: -> { EmployeeOptions.currencies } }
+  validates :salary,          presence: true,
+                              numericality: {
+                                greater_than: 0,
+                                less_than:    10_000_000,
+                                only_integer: false
+                              }
+  validates :employment_type, presence: true,
+                              inclusion: { in: -> { EmployeeOptions.employment_types } }
+  validates :currency,        presence: true,
+                              inclusion: { in: -> { EmployeeOptions.currencies } }
 
   # Columns the API is allowed to sort by. Anything outside this list falls
   # back to the default (id asc) — prevents SQL injection via sort param.

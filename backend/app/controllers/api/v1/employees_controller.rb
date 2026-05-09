@@ -24,7 +24,7 @@ module Api
                  status: :created
         else
           render json: { errors: employee.errors.full_messages },
-                 status: :unprocessable_entity
+                 status: :unprocessable_content
         end
       end
 
@@ -33,7 +33,7 @@ module Api
           render json: EmployeeSerializer.new(@employee).serializable_hash
         else
           render json: { errors: @employee.errors.full_messages },
-                 status: :unprocessable_entity
+                 status: :unprocessable_content
         end
       end
 

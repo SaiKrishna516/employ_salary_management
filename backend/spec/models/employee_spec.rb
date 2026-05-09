@@ -2,78 +2,111 @@ require "rails_helper"
 
 RSpec.describe Employee, type: :model do
 
+  # ── Validations ─────────────────────────────────────────────────────────
   describe "validations" do
-    it { should validate_presence_of(:full_name) }
-    it { should validate_presence_of(:job_title) }
-    it { should validate_presence_of(:department) }
-    it { should validate_presence_of(:country) }
-    it { should validate_presence_of(:email) }
-    it { should validate_presence_of(:hired_on) }
-    it { should validate_uniqueness_of(:email).case_insensitive }
 
-    it { should validate_numericality_of(:salary)
-                  .is_greater_than(0)
-                  .is_less_than(10_000_000) }
+    # Presence — one shoulda one-liner each, no DB hit
+    it { is_expected.to validate_presence_of(:full_name) }
+    it { is_expected.to validate_presence_of(:job_title) }
+    it { is_expected.to validate_presence_of(:department) }
+    it { is_expected.to validate_presence_of(:country) }
+    it { is_expected.to validate_presence_of(:email) }
+    it { is_expected.to validate_presence_of(:hired_on) }
+    it { is_expected.to validate_presence_of(:salary) }
+    it { is_expected.to validate_presence_of(:employment_type) }
+    it { is_expected.to validate_presence_of(:currency) }
 
-    it "is invalid with an unknown employment_type" do
-      employee = build(:employee, employment_type: "freelance")
-      expect(employee).not_to be_valid
-      expect(employee.errors[:employment_type]).to be_present
+    # Uniqueness
+    it { is_expected.to validate_uniqueness_of(:email).case_insensitive }
+
+    # Numericality
+    it do
+      is_expected.to validate_numericality_of(:salary)
+                       .is_greater_than(0)
+                       .is_less_than(10_000_000)
     end
 
-    it "is valid with employment_type full_time" do
-      expect(build(:employee, employment_type: "full_time")).to be_valid
+    it { is_expected.not_to allow_value(0, -1).for(:salary) }
+
+    # Length
+    it { is_expected.to validate_length_of(:full_name).is_at_most(255) }
+    it { is_expected.to validate_length_of(:job_title).is_at_most(255) }
+    it { is_expected.to validate_length_of(:department).is_at_most(255) }
+    it { is_expected.to validate_length_of(:country).is_at_most(255) }
+
+    # Email format — one generated example per bad value, one for a good value
+    %w[not-an-email user@ @example.com plaintext].each do |bad_email|
+      it { is_expected.not_to allow_value(bad_email).for(:email) }
     end
 
-    it "is valid with employment_type part_time" do
-      expect(build(:employee, employment_type: "part_time")).to be_valid
-    end
+    it { is_expected.to allow_value("valid.user+tag@example.co.uk").for(:email) }
 
-    it "is valid with employment_type contract" do
-      expect(build(:employee, employment_type: "contract")).to be_valid
-    end
+    # Employment type — valid set and invalid values in two lines
+    it { is_expected.to allow_value("full_time", "part_time", "contract").for(:employment_type) }
+    it { is_expected.not_to allow_value("freelance", nil).for(:employment_type) }
+
+    # Currency — all valid values in one line, invalids in one line
+    it { is_expected.to allow_value(*EmployeeOptions.currencies).for(:currency) }
+    it { is_expected.not_to allow_value("BTC", "DOGE", nil).for(:currency) }
   end
 
+  # ── Scopes ───────────────────────────────────────────────────────────────
+  # Records are created once per describe block via before; transactional
+  # fixtures roll them back after each example with zero extra teardown cost.
+
   describe ".by_country" do
-    it "returns employees in the specified country only" do
+    before do
       create(:employee, country: "India")
       create(:employee, country: "India")
       create(:employee, country: "USA")
+    end
+
+    it "returns only employees from the requested country" do
       expect(Employee.by_country("India").count).to eq(2)
     end
 
     it "is case-insensitive" do
-      create(:employee, country: "India")
-      expect(Employee.by_country("india").count).to eq(1)
+      expect(Employee.by_country("india").count).to eq(2)
     end
   end
 
   describe ".by_job_title" do
-    it "returns employees with the specified job title" do
+    before do
       create(:employee, job_title: "Engineer")
       create(:employee, job_title: "Manager")
+    end
+
+    it "returns only employees with the matching job title" do
       expect(Employee.by_job_title("Engineer").count).to eq(1)
     end
   end
 
   describe ".by_department" do
-    it "filters by department" do
+    before do
       create(:employee, department: "Engineering")
       create(:employee, department: "Sales")
+    end
+
+    it "filters by department" do
       expect(Employee.by_department("Engineering").count).to eq(1)
     end
   end
 
+  # ── Aggregations ─────────────────────────────────────────────────────────
   describe ".salary_stats" do
-    it "returns min, max, average, and count" do
+    before do
       create(:employee, country: "India", salary: 40_000)
       create(:employee, country: "India", salary: 80_000)
       create(:employee, country: "India", salary: 120_000)
+    end
 
-      stats = Employee.by_country("India").salary_stats
+    # Named subject so expectations read naturally; aggregate_failures
+    # reports all failures in one run instead of stopping at the first.
+    subject(:stats) { Employee.by_country("India").salary_stats }
 
-      expect(stats[:min]).to eq(40_000)
-      expect(stats[:max]).to eq(120_000)
+    it "returns correct min, max, average, and count", :aggregate_failures do
+      expect(stats[:min]).to   eq(40_000)
+      expect(stats[:max]).to   eq(120_000)
       expect(stats[:avg].round).to eq(80_000)
       expect(stats[:count]).to eq(3)
     end

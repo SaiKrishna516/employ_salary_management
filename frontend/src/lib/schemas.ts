@@ -26,17 +26,20 @@ const employmentTypeValues = EMPLOYMENT_TYPES.map((e) => e.value) as [
 ];
 
 export const employeeSchema = z.object({
-  full_name:       z.string().min(1, "Full name is required"),
-  email:           z.string().min(1, "Email is required").email("Must be a valid email"),
-  job_title:       z.string().min(1, "Job title is required"),
-  department:      z.string().min(1, "Department is required"),
-  country:         z.string().min(1, "Country is required"),
+  full_name:       z.string().min(1, "Full name is required").max(255, "Too long"),
+  email:           z
+                     .string()
+                     .min(1, "Email is required")
+                     .email("Must be a valid email address (e.g. jane@example.com)"),
+  job_title:       z.string().min(1, "Please select a job title").max(255, "Too long"),
+  department:      z.string().min(1, "Please select a department").max(255, "Too long"),
+  country:         z.string().min(1, "Please select a country").max(255, "Too long"),
   salary:          z
                      .number({ message: "Salary must be a number" })
                      .gt(0, "Salary must be greater than 0")
                      .lt(10_000_000, "Salary must be less than 10,000,000"),
-  currency:        z.enum(CURRENCIES),
-  employment_type: z.enum(employmentTypeValues),
+  currency:        z.enum(CURRENCIES, { message: "Please select a currency" }),
+  employment_type: z.enum(employmentTypeValues, { message: "Please select an employment type" }),
   hired_on:        z.string().min(1, "Hire date is required"),
 });
 

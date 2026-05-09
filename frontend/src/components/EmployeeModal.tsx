@@ -24,15 +24,20 @@ function Field({
   error,
   children,
   fullWidth = false,
+  required = false,
 }: {
   label: string;
   error?: string;
   children: React.ReactNode;
   fullWidth?: boolean;
+  required?: boolean;
 }) {
   return (
     <div className={fullWidth ? "col-span-2" : ""}>
-      <label className="block text-xs font-medium text-gray-400 mb-1">{label}</label>
+      <label className="block text-xs font-medium text-gray-400 mb-1">
+        {label}
+        {required && <span className="text-red-400 ml-0.5">*</span>}
+      </label>
       {children}
       {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
     </div>
@@ -102,71 +107,97 @@ export default function EmployeeModal({ employee, onClose }: Props) {
         >
           <div className="grid grid-cols-2 gap-4">
             {/* Text inputs */}
-            <Field label="Full Name" error={errors.full_name?.message} fullWidth>
-              <input {...register("full_name")} className={inputCls} />
+            <Field label="Full Name" error={errors.full_name?.message} fullWidth required>
+              <input
+                {...register("full_name")}
+                className={inputCls}
+                required
+                placeholder="Jane Smith"
+              />
             </Field>
-            <Field label="Email" error={errors.email?.message} fullWidth>
-              <input {...register("email")} type="email" className={inputCls} />
+
+            <Field label="Email" error={errors.email?.message} fullWidth required>
+              <input
+                {...register("email")}
+                type="email"
+                className={inputCls}
+                required
+                placeholder="jane@example.com"
+              />
             </Field>
 
             {/* Salary + Hired On */}
-            <Field label="Salary" error={errors.salary?.message}>
+            <Field label="Salary" error={errors.salary?.message} required>
               <input
                 {...register("salary", { valueAsNumber: true })}
                 type="number"
                 min={1}
+                max={9_999_999}
                 className={inputCls}
+                required
+                placeholder="90000"
               />
             </Field>
-            <Field label="Hired On" error={errors.hired_on?.message}>
-              <input {...register("hired_on")} type="date" className={inputCls} />
+
+            <Field label="Hired On" error={errors.hired_on?.message} required>
+              <input
+                {...register("hired_on")}
+                type="date"
+                className={inputCls}
+                required
+                max={new Date().toISOString().split("T")[0]}
+              />
             </Field>
 
             {/* ── Dropdowns populated from constants.json (YAML on backend) ── */}
-
-            <Field label="Job Title" error={errors.job_title?.message}>
-              <select {...register("job_title")} className={selectCls}>
-                <option value="">— Select —</option>
+            <Field label="Job Title" error={errors.job_title?.message} required>
+              <select {...register("job_title")} className={selectCls} required defaultValue="">
+                <option value="" disabled>— Select —</option>
                 {JOB_TITLES.map((t) => (
                   <option key={t} value={t}>{t}</option>
                 ))}
               </select>
             </Field>
 
-            <Field label="Department" error={errors.department?.message}>
-              <select {...register("department")} className={selectCls}>
-                <option value="">— Select —</option>
+            <Field label="Department" error={errors.department?.message} required>
+              <select {...register("department")} className={selectCls} required defaultValue="">
+                <option value="" disabled>— Select —</option>
                 {DEPARTMENTS.map((d) => (
                   <option key={d} value={d}>{d}</option>
                 ))}
               </select>
             </Field>
 
-            <Field label="Country" error={errors.country?.message}>
-              <select {...register("country")} className={selectCls}>
-                <option value="">— Select —</option>
+            <Field label="Country" error={errors.country?.message} required>
+              <select {...register("country")} className={selectCls} required defaultValue="">
+                <option value="" disabled>— Select —</option>
                 {COUNTRIES.map((c) => (
                   <option key={c} value={c}>{c}</option>
                 ))}
               </select>
             </Field>
 
-            <Field label="Currency" error={errors.currency?.message}>
-              <select {...register("currency")} className={selectCls}>
+            <Field label="Currency" error={errors.currency?.message} required>
+              <select {...register("currency")} className={selectCls} required>
                 {CURRENCIES.map((c) => (
                   <option key={c} value={c}>{c}</option>
                 ))}
               </select>
             </Field>
 
-            <Field label="Employment Type" error={errors.employment_type?.message} fullWidth>
-              <select {...register("employment_type")} className={selectCls}>
+            <Field label="Employment Type" error={errors.employment_type?.message} fullWidth required>
+              <select {...register("employment_type")} className={selectCls} required>
                 {EMPLOYMENT_TYPES.map(({ value, label }) => (
                   <option key={value} value={value}>{label}</option>
                 ))}
               </select>
             </Field>
           </div>
+
+          {/* Required field legend */}
+          <p className="text-xs text-gray-500">
+            <span className="text-red-400">*</span> Required fields
+          </p>
 
           {mutation.isError && (
             <p className="text-red-400 text-sm bg-red-950/40 border border-red-800 rounded-lg px-3 py-2">
