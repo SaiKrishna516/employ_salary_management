@@ -12,9 +12,25 @@ class Employee < ApplicationRecord
   validates :employment_type, inclusion: { in: EMPLOYMENT_TYPES }
   validates :currency,        inclusion: { in: CURRENCIES }
 
+  # Columns the API is allowed to sort by. Anything outside this list falls
+  # back to the default (id asc) — prevents SQL injection via sort param.
+  SORTABLE_COLUMNS = %w[id full_name salary hired_on department country job_title].freeze
+
   scope :by_country,    ->(c) { where("LOWER(country) = ?", c.downcase) }
   scope :by_job_title,  ->(t) { where(job_title: t) }
   scope :by_department, ->(d) { where(department: d) }
+
+  # Apply sort from request params. Safe against arbitrary column injection.
+  scope :sorted, ->(col = nil, dir = nil) {
+    column    = SORTABLE_COLUMNS.include?(col.to_s) ? col.to_s : "id"
+    direction = %w[asc desc].include?(dir.to_s.downcase) ? dir.to_s.downcase : "asc"
+    order(Arel.sql("#{column} #{direction}"))
+  }
+
+  # Entry point for controller — delegates filter logic to the query object.
+  def self.filter(params = {})
+    EmployeeFilter.apply(all, params)
+  end
 
   def self.salary_stats
     {

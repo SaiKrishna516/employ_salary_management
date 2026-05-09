@@ -4,10 +4,10 @@ module Api
       before_action :set_employee, only: [:show, :update, :destroy]
 
       def index
-        employees = EmployeeFilter.apply(Employee.all, filter_params)
-                                  .order(:full_name)
-                                  .page(params[:page])
-                                  .per(params[:per_page] || 25)
+        employees = Employee.filter(filter_params)
+                            .sorted(params[:sort], params[:direction])
+                            .page(params[:page])
+                            .per(params[:per_page] || 25)
 
         render json: EmployeeSerializer.new(employees).serializable_hash
                                        .merge(meta: pagination_meta(employees))
