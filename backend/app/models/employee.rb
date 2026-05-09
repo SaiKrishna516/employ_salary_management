@@ -44,12 +44,4 @@ class Employee < ApplicationRecord
     EmployeeFilter.apply(all, params)
   end
 
-  def self.salary_stats
-    {
-      min:   minimum(:salary).to_f,
-      max:   maximum(:salary).to_f,
-      avg:   average(:salary).to_f,
-      count: count
-    }
-  end
 end

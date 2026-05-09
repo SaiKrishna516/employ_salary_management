@@ -93,22 +93,4 @@ RSpec.describe Employee, type: :model do
   end
 
   # ── Aggregations ─────────────────────────────────────────────────────────
-  describe ".salary_stats" do
-    before do
-      create(:employee, country: "India", salary: 40_000)
-      create(:employee, country: "India", salary: 80_000)
-      create(:employee, country: "India", salary: 120_000)
-    end
-
-    # Named subject so expectations read naturally; aggregate_failures
-    # reports all failures in one run instead of stopping at the first.
-    subject(:stats) { Employee.by_country("India").salary_stats }
-
-    it "returns correct min, max, average, and count", :aggregate_failures do
-      expect(stats[:min]).to   eq(40_000)
-      expect(stats[:max]).to   eq(120_000)
-      expect(stats[:avg].round).to eq(80_000)
-      expect(stats[:count]).to eq(3)
-    end
-  end
 end

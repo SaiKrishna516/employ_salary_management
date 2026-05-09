@@ -673,3 +673,117 @@ Processing by Api::V1::EmployeesController#index as HTML
 Completed 200 OK in 15ms (Views: 0.6ms | ActiveRecord: 5.0ms | Allocations: 10430)
 
 
+Started GET "/api/v1/employees?employment_type=full_time&page=1&per_page=25" for ::1 at 2026-05-09 18:14:06 +0530
+Processing by Api::V1::EmployeesController#index as HTML
+  Parameters: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25"}
+[31mUnpermitted parameters: :page, :per_page. Context: { controller: Api::V1::EmployeesController, action: index, request: #<ActionDispatch::Request:0x00000001168f3498>, params: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25", "controller"=>"api/v1/employees", "action"=>"index"} }[0m
+  [1m[36mEmployee Load (0.5ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."employment_type" = $1 ORDER BY id asc LIMIT $2 OFFSET $3[0m  [["employment_type", "full_time"], ["LIMIT", 25], ["OFFSET", 0]]
+  ↳ app/controllers/api/v1/employees_controller.rb:12:in `index'
+  [1m[36mEmployee Count (0.4ms)[0m  [1m[34mSELECT COUNT(*) FROM "employees" WHERE "employees"."employment_type" = $1[0m  [["employment_type", "full_time"]]
+  ↳ app/controllers/api/v1/employees_controller.rb:67:in `pagination_meta'
+Completed 200 OK in 6ms (Views: 0.9ms | ActiveRecord: 0.9ms | Allocations: 3568)
+
+
+Started GET "/api/v1/employees?employment_type=full_time&page=1&per_page=25" for ::1 at 2026-05-09 18:15:22 +0530
+Processing by Api::V1::EmployeesController#index as HTML
+  Parameters: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25"}
+[31mUnpermitted parameters: :page, :per_page. Context: { controller: Api::V1::EmployeesController, action: index, request: #<ActionDispatch::Request:0x000000011339cb28>, params: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25", "controller"=>"api/v1/employees", "action"=>"index"} }[0m
+  [1m[36mEmployee Load (1.1ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."employment_type" = $1 ORDER BY id asc LIMIT $2 OFFSET $3[0m  [["employment_type", "full_time"], ["LIMIT", 25], ["OFFSET", 0]]
+  ↳ app/controllers/api/v1/employees_controller.rb:12:in `index'
+  [1m[36mEmployee Count (1.0ms)[0m  [1m[34mSELECT COUNT(*) FROM "employees" WHERE "employees"."employment_type" = $1[0m  [["employment_type", "full_time"]]
+  ↳ app/controllers/api/v1/employees_controller.rb:67:in `pagination_meta'
+Completed 200 OK in 11ms (Views: 1.0ms | ActiveRecord: 2.1ms | Allocations: 3563)
+
+
+[EmployeeOptions] constants.json written to /Users/saikrishna/.gemini/antigravity/scratch/salary-tool/frontend/src/lib/constants.json
+Started GET "/api/v1/employees?employment_type=full_time&page=1&per_page=25" for ::1 at 2026-05-09 18:19:46 +0530
+Processing by Api::V1::EmployeesController#index as HTML
+  Parameters: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25"}
+[31mUnpermitted parameters: :page, :per_page. Context: { controller: Api::V1::EmployeesController, action: index, request: #<ActionDispatch::Request:0x0000000102e92bd8>, params: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25", "controller"=>"api/v1/employees", "action"=>"index"} }[0m
+  [1m[36mEmployee Load (0.9ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."employment_type" = $1 ORDER BY id asc LIMIT $2 OFFSET $3[0m  [["employment_type", "full_time"], ["LIMIT", 25], ["OFFSET", 0]]
+  ↳ app/controllers/api/v1/employees_controller.rb:12:in `index'
+  [1m[36mEmployee Count (1.1ms)[0m  [1m[34mSELECT COUNT(*) FROM "employees" WHERE "employees"."employment_type" = $1[0m  [["employment_type", "full_time"]]
+  ↳ app/controllers/api/v1/employees_controller.rb:67:in `pagination_meta'
+Completed 200 OK in 9ms (Views: 0.8ms | ActiveRecord: 1.9ms | Allocations: 3563)
+
+
+Started GET "/api/v1/employees?employment_type=full_time&page=1&per_page=25" for ::1 at 2026-05-09 18:21:34 +0530
+Processing by Api::V1::EmployeesController#index as HTML
+  Parameters: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25"}
+[31mUnpermitted parameters: :page, :per_page. Context: { controller: Api::V1::EmployeesController, action: index, request: #<ActionDispatch::Request:0x000000011781d040>, params: {"employment_type"=>"full_time", "page"=>"1", "per_page"=>"25", "controller"=>"api/v1/employees", "action"=>"index"} }[0m
+  [1m[36mEmployee Load (0.4ms)[0m  [1m[34mSELECT "employees".* FROM "employees" WHERE "employees"."employment_type" = $1 ORDER BY id asc LIMIT $2 OFFSET $3[0m  [["employment_type", "full_time"], ["LIMIT", 25], ["OFFSET", 0]]
+  ↳ app/controllers/api/v1/employees_controller.rb:12:in `index'
+  [1m[36mEmployee Count (0.4ms)[0m  [1m[34mSELECT COUNT(*) FROM "employees" WHERE "employees"."employment_type" = $1[0m  [["employment_type", "full_time"]]
+  ↳ app/controllers/api/v1/employees_controller.rb:67:in `pagination_meta'
+Completed 200 OK in 16ms (Views: 0.6ms | ActiveRecord: 5.3ms | Allocations: 10392)
+
+
+[EmployeeOptions] constants.json written to /Users/saikrishna/.gemini/antigravity/scratch/salary-tool/frontend/src/lib/constants.json
+Started GET "/api/v1/employees?employment_type=full_time&page=1&per_page=25" for ::1 at 2026-05-09 18:34:35 +0530
+  [1m[36mActiveRecord::SchemaMigration Load (0.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  
+ActiveRecord::PendingMigrationError (
+
+Migrations are pending. To resolve this issue, run:
+
+        bin/rails db:migrate
+
+You have 1 pending migration:
+
+db/migrate/20260509130434_add_lower_country_index_to_employees.rb
+
+
+):
+  
+activerecord (7.1.6) lib/active_record/migration.rb:755:in `check_pending_migrations'
+activerecord (7.1.6) lib/active_record/migration.rb:644:in `block (2 levels) in call'
+activesupport (7.1.6) lib/active_support/file_update_checker.rb:85:in `execute'
+activesupport (7.1.6) lib/active_support/file_update_checker.rb:95:in `execute_if_updated'
+activerecord (7.1.6) lib/active_record/migration.rb:651:in `block in call'
+activerecord (7.1.6) lib/active_record/migration.rb:641:in `synchronize'
+activerecord (7.1.6) lib/active_record/migration.rb:641:in `call'
+actionpack (7.1.6) lib/action_dispatch/middleware/callbacks.rb:29:in `block in call'
+activesupport (7.1.6) lib/active_support/callbacks.rb:101:in `run_callbacks'
+actionpack (7.1.6) lib/action_dispatch/middleware/callbacks.rb:28:in `call'
+actionpack (7.1.6) lib/action_dispatch/middleware/executor.rb:14:in `call'
+actionpack (7.1.6) lib/action_dispatch/middleware/actionable_exceptions.rb:16:in `call'
+actionpack (7.1.6) lib/action_dispatch/middleware/debug_exceptions.rb:29:in `call'
+actionpack (7.1.6) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
+railties (7.1.6) lib/rails/rack/logger.rb:37:in `call_app'
+railties (7.1.6) lib/rails/rack/logger.rb:24:in `block in call'
+activesupport (7.1.6) lib/active_support/tagged_logging.rb:139:in `block in tagged'
+activesupport (7.1.6) lib/active_support/tagged_logging.rb:39:in `tagged'
+activesupport (7.1.6) lib/active_support/tagged_logging.rb:139:in `tagged'
+activesupport (7.1.6) lib/active_support/broadcast_logger.rb:241:in `method_missing'
+railties (7.1.6) lib/rails/rack/logger.rb:24:in `call'
+actionpack (7.1.6) lib/action_dispatch/middleware/remote_ip.rb:92:in `call'
+actionpack (7.1.6) lib/action_dispatch/middleware/request_id.rb:28:in `call'
+rack (3.2.6) lib/rack/runtime.rb:24:in `call'
+activesupport (7.1.6) lib/active_support/cache/strategy/local_cache_middleware.rb:29:in `call'
+actionpack (7.1.6) lib/action_dispatch/middleware/server_timing.rb:59:in `block in call'
+actionpack (7.1.6) lib/action_dispatch/middleware/server_timing.rb:24:in `collect_events'
+actionpack (7.1.6) lib/action_dispatch/middleware/server_timing.rb:58:in `call'
+actionpack (7.1.6) lib/action_dispatch/middleware/executor.rb:14:in `call'
+actionpack (7.1.6) lib/action_dispatch/middleware/static.rb:25:in `call'
+rack (3.2.6) lib/rack/sendfile.rb:131:in `call'
+actionpack (7.1.6) lib/action_dispatch/middleware/host_authorization.rb:141:in `call'
+rack-cors (3.0.0) lib/rack/cors.rb:102:in `call'
+railties (7.1.6) lib/rails/engine.rb:536:in `call'
+puma (8.0.1) lib/puma/configuration.rb:305:in `call'
+puma (8.0.1) lib/puma/response.rb:79:in `block in handle_request'
+puma (8.0.1) lib/puma/thread_pool.rb:434:in `with_force_shutdown'
+puma (8.0.1) lib/puma/response.rb:78:in `handle_request'
+puma (8.0.1) lib/puma/server.rb:508:in `process_client'
+puma (8.0.1) lib/puma/server.rb:263:in `block in run'
+puma (8.0.1) lib/puma/thread_pool.rb:246:in `block in spawn_thread'
+[EmployeeOptions] constants.json written to /Users/saikrishna/.gemini/antigravity/scratch/salary-tool/frontend/src/lib/constants.json
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT pg_try_advisory_lock(5073945470573576205)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.4ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+Migrating to AddLowerCountryIndexToEmployees (20260509130434)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (30.0ms)[0m  [1m[35mCREATE INDEX "index_employees_on_lower_country" ON "employees" (LOWER(country))[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.2ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20260509130434') RETURNING "version"[0m
+  [1m[36mTRANSACTION (1.2ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT pg_advisory_unlock(5073945470573576205)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m

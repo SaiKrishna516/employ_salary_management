@@ -32,8 +32,6 @@ class InsightsQuery
   # appending ORDER BY "employees"."id" ASC LIMIT 1 which PG rejects on
   # aggregate-only SELECT statements.
   def overall_stats
-    return empty_stats if @scope.empty?
-
     row = @scope
       .select(Arel.sql(
         "MIN(salary)  AS min_salary,
@@ -43,6 +41,10 @@ class InsightsQuery
       ))
       .to_a
       .first
+
+    # PG always returns one row for a non-grouped aggregate SELECT.
+    # If no employees match, COUNT(*) = 0 and MIN/MAX/AVG are NULL.
+    return empty_stats if row.nil? || row.employee_count.to_i.zero?
 
     {
       min:   row.min_salary.to_f,
@@ -80,8 +82,8 @@ class InsightsQuery
   # salary range, replaces a while loop that would fire O(n) queries.
   # Only bands with at least one employee are returned.
   def salary_band_distribution
-    return [] if @scope.empty?
-
+    # An empty scope produces zero GROUP BY rows → naturally returns [].
+    # No need for a separate @scope.empty? COUNT(*) guard query.
     @scope
       .group(Arel.sql("FLOOR(salary / #{BAND_SIZE}) * #{BAND_SIZE}"))
       .select(Arel.sql(
