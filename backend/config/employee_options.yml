@@ -1,0 +1,52 @@
+employment_types:
+  - value: full_time
+    label: Full Time
+  - value: part_time
+    label: Part Time
+  - value: contract
+    label: Contract
+
+currencies:
+  - USD
+  - EUR
+  - GBP
+  - INR
+  - AUD
+  - CAD
+
+job_titles:
+  - Software Engineer
+  - Senior Engineer
+  - Engineering Manager
+  - Product Manager
+  - Data Analyst
+  - Data Scientist
+  - HR Manager
+  - Finance Analyst
+  - Marketing Lead
+  - Operations Manager
+  - Sales Executive
+  - Designer
+
+departments:
+  - Engineering
+  - Product
+  - Data
+  - HR
+  - Finance
+  - Marketing
+  - Operations
+  - Sales
+  - Design
+
+countries:
+  - India
+  - USA
+  - UK
+  - Canada
+  - Australia
+  - Germany
+  - France
+  - Brazil
+  - Japan
+  - Singapore

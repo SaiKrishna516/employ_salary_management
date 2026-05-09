@@ -1,6 +1,6 @@
 class Employee < ApplicationRecord
-  EMPLOYMENT_TYPES = %w[full_time part_time contract].freeze
-  CURRENCIES       = %w[USD EUR GBP INR AUD CAD].freeze
+  # Option lists live in config/employee_options.yml — accessed via EmployeeOptions module.
+  # Do NOT redefine them here; use EmployeeOptions.employment_types / .currencies directly.
 
   validates :full_name,       presence: true
   validates :job_title,       presence: true
@@ -9,8 +9,8 @@ class Employee < ApplicationRecord
   validates :email,           presence: true, uniqueness: { case_sensitive: false }
   validates :hired_on,        presence: true
   validates :salary,          numericality: { greater_than: 0, less_than: 10_000_000 }
-  validates :employment_type, inclusion: { in: EMPLOYMENT_TYPES }
-  validates :currency,        inclusion: { in: CURRENCIES }
+  validates :employment_type, inclusion: { in: -> { EmployeeOptions.employment_types } }
+  validates :currency,        inclusion: { in: -> { EmployeeOptions.currencies } }
 
   # Columns the API is allowed to sort by. Anything outside this list falls
   # back to the default (id asc) — prevents SQL injection via sort param.
