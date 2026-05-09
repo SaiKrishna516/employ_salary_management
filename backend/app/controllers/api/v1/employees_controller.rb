@@ -4,22 +4,13 @@ module Api
       before_action :set_employee, only: [:show, :update, :destroy]
 
       def index
-        employees = Employee.all
-        employees = employees.by_country(params[:country])                        if params[:country].present?
-        employees = employees.by_job_title(params[:job_title])                    if params[:job_title].present?
-        employees = employees.by_department(params[:department])                  if params[:department].present?
-        employees = employees.where(employment_type: params[:employment_type])    if params[:employment_type].present?
-        employees = employees.where("LOWER(full_name) LIKE ?", "%#{params[:search].downcase}%") if params[:search].present?
+        employees = EmployeeFilter.apply(Employee.all, filter_params)
+                                  .order(:full_name)
+                                  .page(params[:page])
+                                  .per(params[:per_page] || 25)
 
-        employees = employees.order(:full_name).page(params[:page]).per(params[:per_page] || 25)
-
-        render json: EmployeeSerializer.new(employees).serializable_hash.merge(
-          meta: {
-            current_page: employees.current_page,
-            total_pages:  employees.total_pages,
-            total_count:  employees.total_count
-          }
-        )
+        render json: EmployeeSerializer.new(employees).serializable_hash
+                                       .merge(meta: pagination_meta(employees))
       end
 
       def show
@@ -59,12 +50,25 @@ module Api
         render json: { error: "Employee not found" }, status: :not_found
       end
 
+      def filter_params
+        params.permit(:country, :job_title, :department, :employment_type, :search)
+      end
+
       def employee_params
         params.require(:employee).permit(
           :full_name, :job_title, :department, :country,
           :salary, :currency, :employment_type, :email, :hired_on
         )
       end
+
+      def pagination_meta(collection)
+        {
+          current_page: collection.current_page,
+          total_pages:  collection.total_pages,
+          total_count:  collection.total_count
+        }
+      end
     end
   end
 end
+
